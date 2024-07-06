@@ -10,10 +10,10 @@ const isValidUrl = (text:string) => {
     return urlRegex.test(text);
 }
 
-export async function GET(req: NextApiRequest, res: NextResponse) {
+export async function GET(req: Request | NextRequest, res: NextResponse) {
 
     // get and valid URL
-    const { searchParams } = new URL(req.url as string, req.headers.host)
+    const { searchParams } = new URL(req.url as string)
     const website_url = searchParams.get('url')
     if (!website_url) return NextResponse.json({ error: 'No URL provided' }, {status: 400})
     if (!isValidUrl(website_url)) return NextResponse.json({ error: 'Invalid URL format' }, { status: 400 })
@@ -33,7 +33,7 @@ export async function GET(req: NextApiRequest, res: NextResponse) {
         const puppeteer = await import("puppeteer");
         browser = await puppeteer.launch();
     }
-    
+
     const page = await browser.newPage();
     
     // Open URL in current page
